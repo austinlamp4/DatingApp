@@ -477,3 +477,7 @@ $RECYCLE.BIN/
 *.lnk
 
 API/appsettings.json
+
+client/.vscode/extensions.json
+
+client/.vscode/
