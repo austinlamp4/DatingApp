@@ -1,7 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { MembersListComponent } from './members/members-list/members-list.component';
+import { MemberDetailComponent } from './members/member-detail/member-detail.component';
+import { ListsComponent } from './lists/lists.component';
+import { MessagesComponent } from './messages/messages.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'members', component: MembersListComponent },
+  { path: 'members/:id', component: MemberDetailComponent },
+  { path: 'lists', component: ListsComponent },
+  { path: 'messages', component: MessagesComponent },
+  {path: '**', component: HomeComponent, pathMatch: 'full'} //If there is some unknown route or nonsense, route them to the home component. pathMatch prevents endless loop when redirecting to an unknown (default) route - prefix would cause an endless loop.
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

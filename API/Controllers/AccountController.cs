@@ -44,12 +44,12 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.Username); //Don't use find because we aren't using the Primary key
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized("Invalid Username");
             using var hmac = new HMACSHA512(user.PasswordSalt); //Remember the salt needs to be specified so the key is properly set
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
             for (int i = 0; i < computedHash.Length; i++)
             {
-                if (computedHash[i] != user.PasswordHash[i]) return Unauthorized(); //If this is true, passwords aren't equivalent
+                if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid Password"); //If this is true, passwords aren't equivalent
             }
 
             //If we made it here, they did match
