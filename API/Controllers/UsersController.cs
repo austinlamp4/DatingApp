@@ -15,7 +15,6 @@ public class UsersController : BaseApiController
         this.context = context;
     }
 
-    [AllowAnonymous]
     [HttpGet] //Creating a GET request to get all users, defaults to /api/users since that's what's configured at the [Route] and we didn't specify anything additional like below.
     public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
     {
