@@ -14,6 +14,8 @@ namespace API.Extensions
             }); //Adding our DB service, opt is specifying our options
             services.AddScoped<ITokenService, TokenService>();
             services.AddCors();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             return services;
         }

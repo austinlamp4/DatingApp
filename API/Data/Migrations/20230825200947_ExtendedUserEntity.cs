@@ -90,6 +90,12 @@ namespace API.Data.Migrations
                 type: "TEXT",
                 nullable: true);
 
+            migrationBuilder.AddColumn<string>(
+                name: "PhotoUrl",
+                table: "Users",
+                type: "TEXT",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new
@@ -162,6 +168,10 @@ namespace API.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "LookingFor",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "PhotoUrl",
                 table: "Users");
 
             migrationBuilder.AlterColumn<byte[]>(
