@@ -77,4 +77,30 @@ public class UsersController : BaseApiController
 
         return BadRequest("Problem adding photo"); //If we make it to this point then there was a problem saving the photo.
     }
+
+    [HttpPut("set-main-photo/{photoId}")]
+    public async Task<ActionResult> SetMainPhoto(int PhotoId)
+    {
+        var user = await this.userRepository.GetUserByUsernameAsync(User.GetUsername());
+        if (user == null) return NotFound();
+        var photo = user.Photos.FirstOrDefault(x => x.Id == PhotoId);
+        if (photo == null) return NotFound();
+        if (photo.IsMain) return BadRequest("This photo is already your main photo");
+
+        var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
+        if (currentMain != null)
+        {
+            currentMain.IsMain = false;
+            photo.IsMain = true;
+        }
+
+        if (await this.userRepository.SaveAllAsync())
+        {
+            return NoContent();
+        } 
+
+        return BadRequest("Problem setting the main photo. Unable to perform update.");
+        
+
+    }
 }

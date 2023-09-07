@@ -43,7 +43,9 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.Username); //Don't use find because we aren't using the Primary key
+            var user = await context.Users
+            .Include(p => p.Photos)
+            .SingleOrDefaultAsync(x => x.UserName == loginDto.Username); //Don't use find because we aren't using the Primary key
             if (user == null) return Unauthorized("Invalid Username");
             using var hmac = new HMACSHA512(user.PasswordSalt); //Remember the salt needs to be specified so the key is properly set
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
@@ -55,7 +57,8 @@ namespace API.Controllers
             //If we made it here, they did match
             return new UserDto {
                 Username = user.UserName,
-                Token = this.tokenService.CreateToken(user)
+                Token = this.tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
             };
         }
 
