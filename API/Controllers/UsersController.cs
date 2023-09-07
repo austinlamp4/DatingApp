@@ -103,4 +103,27 @@ public class UsersController : BaseApiController
         
 
     }
+
+    [HttpDelete("delete-photo/{photoId}")]
+    public async Task<ActionResult> DeletePhoto(int photoId)
+    {
+        var user = await this.userRepository.GetUserByUsernameAsync(User.GetUsername());
+        var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+
+        if (photo == null) return NotFound("The photo referenced does not currently exist.");
+        if (photo.IsMain) return BadRequest("You cannot delete your main photo!");
+
+        //This is a check to make sure the photo isn't a seeded photo and is actually stored in Cloudinary
+        if (photo.PublicId != null)
+        {
+            var result = await this.photoService.DeletePhotoAsync(photo.PublicId);
+            if (result.Error != null) return BadRequest(result.Error.Message);
+        }
+
+        user.Photos.Remove(photo);
+
+        if (await this.userRepository.SaveAllAsync()) return Ok(); //Return Ok if all the changes were saved successfully and we made it this far.
+
+        return BadRequest("Problem occured while deleting the photo!");
+    }
 }
