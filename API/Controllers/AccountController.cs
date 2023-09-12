@@ -48,8 +48,8 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await context.Users
-                .Include(p => p.Photos)
-                .SingleOrDefaultAsync(x => x.UserName == loginDto.Username); //Don't use find because we aren't using the Primary key
+            .Include(p => p.Photos)
+            .SingleOrDefaultAsync(x => x.UserName == loginDto.Username); //Don't use find because we aren't using the Primary key
             if (user == null) return Unauthorized("Invalid Username");
             using var hmac = new HMACSHA512(user.PasswordSalt); //Remember the salt needs to be specified so the key is properly set
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
